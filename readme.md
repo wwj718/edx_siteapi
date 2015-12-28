@@ -1,6 +1,9 @@
 #siteapi
 将edx视为子系统，为外部提供RESTful风格的api
 
+#设计
+*  这部分代码组织形式为django app
+
 #功能
 *  站点级别的管理
 *  用户管理（增删）
