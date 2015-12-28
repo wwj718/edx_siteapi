@@ -19,6 +19,8 @@ from student.models import CourseEnrollment
 from instructor.offline_gradecalc import student_grades
 from courseware.courses import get_course_with_access
 
+#Todo 改为基于类的写法
+
 @api_view(['GET', 'POST','DELETE'])
 @authentication_classes((SessionAuthentication,OAuth2Authentication))
 @permission_classes((IsAdminUser, ))
