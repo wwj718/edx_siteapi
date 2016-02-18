@@ -20,6 +20,7 @@ from instructor.offline_gradecalc import student_grades
 from courseware.courses import get_course_with_access
 
 #Todo 改为基于类的写法
+#注意当前rest框架版本为2.3.14，文档为：[rest-framework-2-docs](http://tomchristie.github.io/rest-framework-2-docs/)
 
 @api_view(['GET', 'POST','DELETE'])
 @authentication_classes((SessionAuthentication,OAuth2Authentication))
@@ -43,6 +44,19 @@ def user(request):
         message = _delete_user(user)
         #print user["username"]
         #message = "#_delete_user"
+        return Response({"message": message, "data": data})
+
+#改为类的写法
+# 使用序列化来验证参数
+from rest_framework.views import APIView
+class User2(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAdminUser,)
+    def get(self, request, format=None):
+        return Response({"message": "user2 get","user":str(request.user)})
+    def post(self, request, format=None):
+        data = request.DATA
+        message = "from User2"
         return Response({"message": message, "data": data})
 
 

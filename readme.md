@@ -13,7 +13,7 @@
 *  ...其他的等你一起来添加 :)
 
 
-#测试
+#调试
 安装[httpie](https://github.com/jkbrzt/httpie)
 
 ###获取access token
