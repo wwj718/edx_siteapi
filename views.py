@@ -32,8 +32,8 @@ def user(request):
         #验证data的合法性 data["user"] 是一个字典
         user = data
         #message = "got it"
-        message = _create_user(user)
-        #message = "#_create_user"
+        #message = _create_user(user)
+        message = "#_create_user"
         #创建用户
         return Response({"message": message, "data": data})
     if request.method == 'DELETE':
@@ -44,3 +44,5 @@ def user(request):
         #print user["username"]
         #message = "#_delete_user"
         return Response({"message": message, "data": data})
+
+
