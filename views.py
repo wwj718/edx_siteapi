@@ -49,14 +49,19 @@ def user(request):
 #改为类的写法
 # 使用序列化来验证参数
 from rest_framework.views import APIView
+from serializers import UserSerializer
+from rest_framework import status
 class User2(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
     def get(self, request, format=None):
         return Response({"message": "user2 get","user":str(request.user)})
     def post(self, request, format=None):
-        data = request.DATA
-        message = "from User2"
-        return Response({"message": message, "data": data})
+        serializer = UserSerializer(data=request.DATA)
+        if serializer.is_valid():
+            #serializer.data
+            message = "from User2"
+            return Response({"message": message, "data": serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
