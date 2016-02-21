@@ -17,6 +17,15 @@ EOF
 cat >> /edx/app/edxapp/edx-platform/lms/envs/aws.py << EOF
 ####add by wwj
 INSTALLED_APPS += ("siteapi",)
+ADVANCED_COMPONENT_CATEGORY = 'advanced'
+ADVANCED_PROBLEM_TYPES = [
+    {
+        'component': 'openassessment',
+        'boilerplate_name': None,
+    },
+]
+FEATURES["ALLOW_ALL_ADVANCED_COMPONENTS"] = True
+FEATURES["ALLOW_UNICODE_COURSE_ID"] = True
 EOF
 
 

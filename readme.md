@@ -20,5 +20,9 @@
 [enable Open edX REST APIs](http://blog.just4fun.site/edx-api.html),只要进入/admin,取得有效access token即可
 
 ###开始调试
-*  http get http://127.0.0.1/siteapi/user 'Authorization: Bearer xxxxxxxxxxxxx' (xxxxxxxxx为你的access token )
-*  http post http://127.0.0.1/siteapi/user username=wwj password=wwj 'Authorization: Bearer xxxxxxxxxxxxx'
+*  http get http://127.0.0.1:5000/siteapi/user 'Authorization: Bearer xxxxxxxxxxxxx' (xxxxxxxxx为你的access token )
+*  http post http://127.0.0.1:5000/siteapi/user username=wwj password=wwj 'Authorization: Bearer xxxxxxxxxxxxx'
+
+#####
+http  post http://127.0.0.1:5000/siteapi/course   org=json_org number=json_number run=json_run display_name=json_display_na
+me  "AUTHORIZATION: Bearer  xxx"

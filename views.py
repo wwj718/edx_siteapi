@@ -51,6 +51,11 @@ def user(request):
 from rest_framework.views import APIView
 from serializers import UserSerializer
 from rest_framework import status
+
+
+
+
+#sh env的问题
 class User2(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
@@ -64,4 +69,31 @@ class User2(APIView):
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#for create course
+import  sys
+sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
+from contentstore.views import create_or_rerun_course
+class Course(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAdminUser,)
+    def post(self, request, format=None):
+        #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
+        request.META["CONTENT_TYPE"]="application/json"
+        print
+        '''
+        request.json ={}
+        request.json["org"]="murp"
+        request.json["number"]="mycourse0203"
+        request.json["display_name"]="hahaha"
+        request.json["run"]="2016_t6"
+        '''
+        #return Response({"message": "user2 get","user":str(request.user)})
+        data = create_or_rerun_course(request)
+        return Response({"message": "course ok","user":str(request.user)})
 
+class tab(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAdminUser,)
+    def post(self, request, format=None):
+        #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
+        return Response({"message": "tab ok","user":str(request.user)})
