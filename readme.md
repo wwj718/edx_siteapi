@@ -23,6 +23,10 @@
 *  http get http://127.0.0.1:5000/siteapi/user 'Authorization: Bearer xxxxxxxxxxxxx' (xxxxxxxxx为你的access token )
 *  http post http://127.0.0.1:5000/siteapi/user username=wwj password=wwj 'Authorization: Bearer xxxxxxxxxxxxx'
 
-#####
-http  post http://127.0.0.1:5000/siteapi/course   org=json_org number=json_number run=json_run display_name=json_display_na
+###create course
+*  http  post http://127.0.0.1:5000/siteapi/course   org=json_org number=json_number run=json_run display_name=json_display_na
 me  "AUTHORIZATION: Bearer  xxx"
+
+###edit tab
+*  http  delete http://127.0.0.1:5000/siteapi/tab   course_id=xxx  "AUTHORIZATION: Bearer xxx"
+*  http  get http://127.0.0.1:5000/siteapi/tab   course_id=xxx  "AUTHORIZATION: Bearer xxx"
