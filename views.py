@@ -73,6 +73,8 @@ class User2(APIView):
 import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
 from contentstore.views import create_or_rerun_course
+#import sh
+from subprocess import call
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
@@ -91,9 +93,25 @@ class Course(APIView):
         data = create_or_rerun_course(request)
         return Response({"message": "course ok","user":str(request.user)})
 
-class tab(APIView):
+import subprocess
+
+class Tab(APIView):
+
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
-    def post(self, request, format=None):
+    def get(self, request, format=None):
+        #edxapp_python = sh.Command("/edx/bin/python.edxapp")
+        #/edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py cms --settings aws edit_course_tabs --course course-v1:json_org+json_number100+json_run3
+        #tab_info_sh = edxapp_python("/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3")
+        #tab_info = tab_info_sh()
+
+        tab_info =subprocess.check_output(["/edx/bin/python.edxapp","/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3"])
+        return Response({"message": tab_info,"user":str(request.user)})
+
+    def delete(self, request, format=None):
+        #取消确认
+        tab_info = subprocess.Popen("/edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py cms --settings aws edit_course_tabs --course course-v1:json_org+json_number100+json_run3 --delete 4",stdin=subprocess.PIPE, shell=True)
+        tab_info.communicate(b"y")
+        #tab_info =subprocess.check_output(["/edx/bin/python.edxapp","/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3","--delete","4"])
         #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
-        return Response({"message": "tab ok","user":str(request.user)})
+        return Response({"message": "delete 4","user":str(request.user)})

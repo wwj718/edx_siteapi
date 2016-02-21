@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     #base class
     url(r'^user2$', views.User2.as_view()),
     url(r'^course$', views.Course.as_view()),
+    url(r'^tab$', views.Tab.as_view()),
     #url(r'^course_enrollment',views.course_enrollment),
 
     #todo
