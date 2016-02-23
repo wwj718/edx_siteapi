@@ -115,3 +115,24 @@ class Tab(APIView):
         #tab_info =subprocess.check_output(["/edx/bin/python.edxapp","/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3","--delete","4"])
         #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
         return Response({"message": "delete 4","user":str(request.user)})
+
+class Grade(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAdminUser,)
+    def get(self, request, format=None):
+        message = "get Grade"
+        return Response({"message": message_,"user":str(request.user)})
+
+class Access(APIView):
+    # ok
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAuthenticated,)
+    def get(self, request, format=None):
+        return Response({"message": "Access ok "})
+
+class Enrollment(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAdminUser,)
+    def get(self, request, format=None):
+        message = "get Enrollment"
+        return Response({"message":message ,"user":str(request.user)})
