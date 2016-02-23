@@ -28,5 +28,8 @@
 me  "AUTHORIZATION: Bearer  xxx"
 
 ###edit tab
+###ps:最终解决方案采用sed+js代码解决，在一个js列表中填入参数，决定元素的可见性。sed用以动态处理html，js是默认引用
+弃用接口（原因：delete之后insert造成不稳定）：
+
 *  http  delete http://127.0.0.1:5000/siteapi/tab tab_num=4   course_id=xxx  "AUTHORIZATION: Bearer xxx"
 *  http  get http://127.0.0.1:5000/siteapi/tab   course_id=xxx  "AUTHORIZATION: Bearer xxx"
