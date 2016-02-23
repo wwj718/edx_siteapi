@@ -73,48 +73,72 @@ class User2(APIView):
 import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
 from contentstore.views import create_or_rerun_course
-#import sh
-from subprocess import call
+
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
     def post(self, request, format=None):
         #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
         request.META["CONTENT_TYPE"]="application/json"
-        print
-        '''
-        request.json ={}
-        request.json["org"]="murp"
-        request.json["number"]="mycourse0203"
-        request.json["display_name"]="hahaha"
-        request.json["run"]="2016_t6"
-        '''
+        request_data = request.DATA
+        course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
         #return Response({"message": "user2 get","user":str(request.user)})
-        data = create_or_rerun_course(request)
-        return Response({"message": "course ok","user":str(request.user)})
+        try:
+            data = create_or_rerun_course(request)
+        except:
+            pass
+        return Response({"message": "course ok","course_id":course_id,"request_data":request_data,"user":str(request.user)})
 
 import subprocess
 
 class Tab(APIView):
+    #最终方案
+    #采用js来做吧
+    #或者css？下载云端然后使用sed来插入course.html里？
+    #使用jquery，移除
+    #$("a[href$=course_wiki]").hide()
+    #/instructor,/progress,/forum,/info,/courseware
 
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
-    def get(self, request, format=None):
-        #edxapp_python = sh.Command("/edx/bin/python.edxapp")
+    def get_tab_info(self, request, format=None):
         #/edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py cms --settings aws edit_course_tabs --course course-v1:json_org+json_number100+json_run3
         #tab_info_sh = edxapp_python("/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3")
-        #tab_info = tab_info_sh()
+        request_data = request.DATA
+        tab_info =subprocess.check_output(["/edx/bin/python.edxapp","/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course",request_data.get("course_id")])
+        return Response({"message": tab_info,"request_data":request_data,"user":str(request.user)})
 
-        tab_info =subprocess.check_output(["/edx/bin/python.edxapp","/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3"])
-        return Response({"message": tab_info,"user":str(request.user)})
+    def post(self, request, format=None):
+        #get 也用post吧
+        request_data = request.DATA
+        course_id = request_data.get("course_id")
+        tab_num = request_data.get("tab_num","")
+        if not tab_num:
+            return self.get_tab_info(request)
+
+        #--insert <tab-number> <type> <name>, e.g. 2 "course_info" "Course Info"
+        '''
+        # [{u'type': u'courseware'}, {u'type': u'course_info', u'name': u'Course Info'}, {u'type': u'textbooks'},
+        # {u'type': u'discussion', u'name': u'Discussion'}, {u'type': u'wiki', u'name': u'Wiki'},
+        # {u'type': u'progress', u'name': u'Progress'}]
+        '''
+        #Tab of type 'progress' appears 2 time(s). Expected maximum of 1 time(s).
+        tab_type = request_data.get("tab_type","")
+        name = request_data.get("name","")
+        tab_info = subprocess.Popen("/edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py cms --settings aws edit_course_tabs --course {course_id} --insert {tab_num} {tab_type} {name}".format(course_id=course_id,tab_num=tab_num,tab_type=tab_type,name=name),stdin=subprocess.PIPE, shell=True)
+        tab_info.communicate(b"y")
+        return Response({"message": "create tab ok","request_data":request_data,"user":str(request.user)})
 
     def delete(self, request, format=None):
+        request_data = request.DATA
         #取消确认
-        tab_info = subprocess.Popen("/edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py cms --settings aws edit_course_tabs --course course-v1:json_org+json_number100+json_run3 --delete 4",stdin=subprocess.PIPE, shell=True)
+        course_id = request_data.get("course_id")
+        tab_num = request_data.get("tab_num")
+        tab_info = subprocess.Popen("/edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py cms --settings aws edit_course_tabs --course {course_id} --delete {tab_num}".format(course_id=course_id,tab_num=tab_num),stdin=subprocess.PIPE, shell=True)
         tab_info.communicate(b"y")
         #tab_info =subprocess.check_output(["/edx/bin/python.edxapp","/edx/app/edxapp/edx-platform/manage.py","cms","--settings","aws","edit_course_tabs","--course","course-v1:json_org+json_number100+json_run3","--delete","4"])
         #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
-        return Response({"message": "delete 4","user":str(request.user)})
+        return Response({"message": "delete {tab_num}".format(tab_num=tab_num),"user":str(request.user)})
 
 class Grade(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
@@ -122,6 +146,8 @@ class Grade(APIView):
     def get(self, request, format=None):
         message = "get Grade"
         return Response({"message": message_,"user":str(request.user)})
+
+
 
 class Access(APIView):
     # ok
