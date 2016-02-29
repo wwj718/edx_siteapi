@@ -154,9 +154,9 @@ class Enrollment(APIView):
         except:
             return False
 
-from qiniu import Auth
 from django.conf import settings
 class Qiniu(APIView):
+    from qiniu import Auth
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAuthenticated,)
     access_key = getattr(settings,  "QINIU_ACCESS_KEY", None)
