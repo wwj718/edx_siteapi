@@ -32,3 +32,6 @@
 
 *  http  delete http://127.0.0.1:5000/siteapi/tab tab_num=4   course_id=xxx  "AUTHORIZATION: Bearer xxx"
 *  http  get http://127.0.0.1:5000/siteapi/tab   course_id=xxx  "AUTHORIZATION: Bearer xxx"
+
+###qiniu
+http  http://127.0.0.1:5000/siteapi/qiniu "Authorization: Bearer xxxx"

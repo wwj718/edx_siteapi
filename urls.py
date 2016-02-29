@@ -8,10 +8,11 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     #base class
-    url(r'^user$', views.User2.as_view()),
+    url(r'^user$', views.User.as_view()),
     url(r'^course$', views.Course.as_view()),
     url(r'^tab$', views.Tab.as_view()),
     url(r'^enrollment$', views.Enrollment.as_view()),
+    url(r'^qiniu$', views.Qiniu.as_view()),
     #url(r'^course_enrollment',views.course_enrollment),
 
     #todo

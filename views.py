@@ -153,3 +153,21 @@ class Enrollment(APIView):
             return True
         except:
             return False
+
+from qiniu import Auth
+from django.conf import settings
+class Qiniu(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
+    permission_classes = (IsAuthenticated,)
+    access_key = getattr(settings,  "QINIU_ACCESS_KEY", None)
+    secret_key = getattr(settings,  "QINIU_SECRET_KEY", None)
+    q = Auth(access_key, secret_key) # access_key和secret_key来自settings里
+    def get_test_uptoken(self,request):
+        bucket_name = "wwj-test"
+        key = "key-test"
+        # 上传策略有许多可选的参数，方便服务于业务逻辑：参考[python-sdk](http://developer.qiniu.com/docs/v6/sdk/python-sdk.html)
+        token = self.q.upload_token(bucket_name, key)
+        return token
+    def get(self, request, format=None):
+        test_uptoken = self.get_test_uptoken(request)
+        return Response({"message": test_uptoken})
