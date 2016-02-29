@@ -7,9 +7,8 @@ from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 urlpatterns = patterns('',
-    url(r'^user$', views.user),
     #base class
-    url(r'^user2$', views.User2.as_view()),
+    url(r'^user$', views.User2.as_view()),
     url(r'^course$', views.Course.as_view()),
     url(r'^tab$', views.Tab.as_view()),
     url(r'^enrollment$', views.Enrollment.as_view()),
