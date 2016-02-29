@@ -28,5 +28,5 @@ FEATURES["ALLOW_ALL_ADVANCED_COMPONENTS"] = True
 FEATURES["ALLOW_UNICODE_COURSE_ID"] = True
 EOF
 
-
+sudo /edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py lms syncdb --settings=aws
 sudo /edx/bin/supervisorctl restart edxapp:

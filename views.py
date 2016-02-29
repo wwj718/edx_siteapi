@@ -4,7 +4,8 @@
 #encoding: utf-8
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
-from rest_framework.authentication import SessionAuthentication,OAuth2Authentication
+from rest_framework.authentication import SessionAuthentication
+from rest_framework_oauth.authentication import OAuth2Authentication
 # Create your views here.
 from rest_framework.response import Response
 #######
