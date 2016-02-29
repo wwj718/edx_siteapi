@@ -49,7 +49,7 @@ class User(APIView):
 #for create course
 import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
-from contentstore.views import create_or_rerun_course
+from contentstore.views import _create_or_rerun_course #侵入做了修改
 
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
@@ -162,7 +162,10 @@ class Qiniu(APIView):
     permission_classes = (IsAuthenticated,)
     access_key = getattr(settings,  "QINIU_ACCESS_KEY", None)
     secret_key = getattr(settings,  "QINIU_SECRET_KEY", None)
-    q = Auth(access_key, secret_key) # access_key和secret_key来自settings里
+    if access_key:
+        q = Auth(access_key, secret_key) # access_key和secret_key来自settings里
+    else:
+        q="access_key is none"
     def get_test_uptoken(self,request):
         bucket_name = "wwj-test"
         key = "key-test"
