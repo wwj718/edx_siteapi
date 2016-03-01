@@ -25,7 +25,7 @@ from courseware.courses import get_course_with_access
 #改为类的写法
 # 使用序列化来验证参数
 from rest_framework.views import APIView
-from serializers import UserSerializer,TabSerializer,EnrollmentSerializer
+from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer
 from rest_framework import status
 
 
@@ -49,7 +49,7 @@ class User(APIView):
 import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
 from contentstore.views import create_or_rerun_course
-
+from .utils import user_exist
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
@@ -58,7 +58,14 @@ class Course(APIView):
         request.META["CONTENT_TYPE"]="application/json"
         request_data = request.DATA
         course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
-        #return Response({"message": "user2 get","user":str(request.user)})
+        serializer = CourseSerializer(data=request.DATA)
+        if  not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            #print type(request.user)
+            #print type(serializer.data.get("username",""))#unicode
+            request.user = user_exist(serializer.data.get("username",""))
+            #print str(request.user)
         try:
             data = create_or_rerun_course(request)
         except:

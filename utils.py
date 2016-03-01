@@ -16,7 +16,7 @@ def user_exist(username_or_email):
                 user = User.objects.get(email=username_or_email)
             else:
                 user = User.objects.get(username=username_or_email)
-            return True
+            return user
         except User.DoesNotExist:
             return False
 

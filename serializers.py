@@ -13,6 +13,17 @@ class UserSerializer(serializers.Serializer):
     age = serializers.IntegerField(max_value=100, min_value=0,required=False)
 
 
+class CourseSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=100)
+    def validate(self, data):
+        username_or_email = data["username"]
+        user = user_exist(username_or_email)
+        if not user:
+            raise serializers.ValidationError(u'用户不存在')
+        else:
+            return data
+
+
 class TabSerializer(serializers.Serializer):
     course_id = serializers.CharField(max_length=100)
     tab_list = serializers.CharField(max_length=100)
