@@ -15,6 +15,11 @@ class UserSerializer(serializers.Serializer):
 
 class CourseSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=100)
+    org = serializers.CharField(max_length=100)
+    number = serializers.CharField(max_length=100)
+    run = serializers.CharField(max_length=100)
+    display_name = serializers.CharField(max_length=100)
+
     def validate(self, data):
         username_or_email = data["username"]
         user = user_exist(username_or_email)
