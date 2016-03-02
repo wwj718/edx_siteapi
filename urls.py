@@ -10,11 +10,12 @@ urlpatterns = patterns('',
     #base class
     url(r'^user$', views.User.as_view()),
     url(r'^course$', views.Course.as_view()),
+    url(r'^course/({})?$'.format(settings.COURSE_ID_PATTERN), views.Course.as_view()),
     url(r'^tab$', views.Tab.as_view()),
     url(r'^enrollment$', views.Enrollment.as_view()),
     url(r'^qiniu$', views.Qiniu.as_view()),
     #url(r'^course_enrollment',views.course_enrollment),
-
+    url(r'^access$', views.Access.as_view()),
     #todo
     #url(r'^grade/courses/{}/username/(?P<username>\w+)'.format(settings.COURSE_ID_PATTERN), views.grade),
     #url(r'^video_outlines', views.video_outlines),

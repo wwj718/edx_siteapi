@@ -50,9 +50,19 @@ import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
 from contentstore.views import create_or_rerun_course
 from .utils import user_exist
+from rest_framework.reverse import reverse
+
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
+    def get(self, request,course_id, format=None):
+    #course_structure_api
+        course_url= reverse(
+                'course-updates-list',
+                kwargs={'course_id': course_id},
+                request=request,
+            )
+        return Response({"message": "get course ","course_url":course_url,"course_id":course_id})
     def post(self, request, format=None):
         #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
         request.META["CONTENT_TYPE"]="application/json"
@@ -70,7 +80,7 @@ class Course(APIView):
             data = create_or_rerun_course(request)
         except:
             pass
-        return Response({"message": "course ok","course_id":course_id,"request_data":request_data,"user":str(request.user)})
+        return Response({"message": "course ok","course_id":course_id,"request_data":request_data})
 
 from .models import CourseTab
 class Tab(APIView):
@@ -98,7 +108,7 @@ class Tab(APIView):
             course_id = request_data.get("course_id","")
             tab_list= request_data.get("tab_list","")
             result = self.change_tab_list(course_id,tab_list)
-            return Response({"message":result,"request_data":request_data,"user":str(request.user)})
+            return Response({"message":result,"request_data":request_data})
 
 class Grade(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)

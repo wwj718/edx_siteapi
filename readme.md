@@ -1,5 +1,7 @@
 #siteapi
-将edx视为子系统，为外部提供RESTful风格的api
+将edx视为子系统，为外部提供RESTful风格的api,技术层面采用与open edx原生api一样的机制
+
+官方的既有的api参考这里:[edx-platform-api](http://edx.readthedocs.org/projects/edx-platform-api/en/latest/)
 
 #设计
 *  这部分代码组织形式为django app
