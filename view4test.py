@@ -28,6 +28,8 @@ def tran2json(func):
 
 from django.http import HttpResponse
 
+#只能改变返回值 而无法修改context，已经是渲染完的结果，而无法进入上下文
+#采用继承
 #@dec
 @tran2json
 def hello_world(request):
