@@ -193,3 +193,10 @@ class Qiniu(APIView):
             return Response({"message": test_uptoken})
     else:
         pass
+#使用装饰器 改变return
+def dec(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        result['c'] = 3
+        return result
+    return wrapper

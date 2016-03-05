@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import views
+import view4test
 #from rest_framework.routers import DefaultRouter
 from django.conf.urls import patterns, url, include
 from django.conf import settings
@@ -16,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^qiniu$', views.Qiniu.as_view()),
     #url(r'^course_enrollment',views.course_enrollment),
     url(r'^access$', views.Access.as_view()),
+    #for test
+    url(r'^hello_world$', view4test.hello_world),
     #todo
     #url(r'^grade/courses/{}/username/(?P<username>\w+)'.format(settings.COURSE_ID_PATTERN), views.grade),
     #url(r'^video_outlines', views.video_outlines),
