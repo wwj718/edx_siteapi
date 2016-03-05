@@ -4,14 +4,7 @@
 import inspect
 import ast
 import codegen  #需要安装
-
-def hello():
-    a=2
-    b=3
-    print a+b
-    return a+b
-print hello()
-
+from ast_fun import hello
 print "*"*10
 
 expr_str = inspect.getsource(hello)
@@ -26,6 +19,9 @@ function_def.body[-1] = new_return
 #fun_return = new_return
 source = codegen.to_source(expr_ast)
 print source
+#全局变量c没有导入
+#ns = {} #上下文
+#exec code in ns
 exec(source, globals())
 print hello()
 
