@@ -37,3 +37,6 @@ http  http://127.0.0.1:5000/siteapi/qiniu "Authorization: Bearer xxx"  (get uplo
 使用`http://httpbin.org/`,原因返回你发送的http请求
 
 *  http post http://httpbin.org/post tab_list=courseware+info+forum "Authorization: Bearer xxx"
+
+#相似项目
+*  [pmitros/edx-rest](https://github.com/pmitros/edx-rest/blob/master/src/edxrest.py)
