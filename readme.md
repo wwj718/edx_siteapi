@@ -14,6 +14,14 @@
 *  注册课程x' (xxxxxxxxx为你的access token )
 *  http post http://127.0.0.1:5000/siteapi/user username=wwj password=wwj 'Authorization: Bearer xxx'
 
+#在dogwood中使用
+```bash
+cd /edx/app/edxapp/edx-platform/lms/djangoapps/
+sudo git clone -b clean_dogwood https://github.com/wwj718/edx_siteapi "siteapi"
+sudo chown edxapp:edxapp siteapi
+sudo ./siteapi/add_the_app.sh
+```
+
 #调试
 安装[httpie](https://github.com/jkbrzt/httpie)
 
