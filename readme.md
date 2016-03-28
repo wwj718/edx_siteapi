@@ -19,6 +19,7 @@
 cd /edx/app/edxapp/edx-platform/lms/djangoapps/
 sudo git clone -b clean_dogwood https://github.com/wwj718/edx_siteapi "siteapi"
 sudo chown edxapp:edxapp siteapi
+sudo /edx/bin/pip.edxapp install -r siteapi/requirements.txt
 sudo ./siteapi/add_the_app.sh
 ```
 
