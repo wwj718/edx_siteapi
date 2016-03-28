@@ -4,7 +4,9 @@
 #encoding: utf-8
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
-from rest_framework.authentication import SessionAuthentication,OAuth2Authentication
+from rest_framework.authentication import SessionAuthentication #,OAuth2Authentication
+from rest_framework_oauth.authentication import OAuth2Authentication
+
 # Create your views here.
 from rest_framework.response import Response
 #######
@@ -44,7 +46,7 @@ class User(APIView):
             message = "from User2"
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+'''
 #for create course
 import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
@@ -109,7 +111,7 @@ class Tab(APIView):
             tab_list= request_data.get("tab_list","")
             result = self.change_tab_list(course_id,tab_list)
             return Response({"message":result,"request_data":request_data})
-
+'''
 class Grade(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-
+'''
 from django.contrib import admin
 from .models import CourseTab
 class CourseTabAdmin(admin.ModelAdmin):
@@ -11,3 +11,4 @@ class CourseTabAdmin(admin.ModelAdmin):
     list_display = ('course_id','tab_list')
 
 admin.site.register(CourseTab,CourseTabAdmin)
+'''
