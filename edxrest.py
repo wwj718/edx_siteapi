@@ -159,14 +159,14 @@ class EdXConnection(object):
                               **kwargs)
         elif method == METHODS.GET:
             if payload:
-                print payload
+                #print payload
                 raise "Payload doesn't work with get"
             r = requests.get(self.server+url,
                              cookies=cookies,
                              headers=headers)
 
         if response_format == DATA_FORMATS.AJAX:
-            print r.text
+            #print r.text
             return json.loads(r.text)
         return r
 
@@ -176,18 +176,19 @@ class EdXConnection(object):
         '''
         Make a new edX course
         '''
-        print "Creating", course_name
+        #print "Creating", course_name
         url = "/course/"
         payload = {"org": course.org,
                    "number": course.number,
                    "run": course.run,
                    "display_name": course_name}
         r = self.ajax(url, payload)
+        return r
 
     def add_author_to_course(self,
                              course,
                              author_email):
-        print "Adding", author_email, "to", course.course_string()
+        #print "Adding", author_email, "to", course.course_string()
         url = "/course_team/{course}/{author_email}"
         url = url.format(course=course.course_string(),
                          author_email=author_email)
@@ -195,7 +196,7 @@ class EdXConnection(object):
         r = self.ajax(url,
                       payload=payload,
                       response_format=DATA_FORMATS.NONE)
-        print r, r.text
+        #print r, r.text
 
     def download_course(self, course, filepointer, close=True):
         '''
