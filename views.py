@@ -4,7 +4,9 @@
 #encoding: utf-8
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
-from rest_framework.authentication import SessionAuthentication,OAuth2Authentication
+from rest_framework.authentication import SessionAuthentication #,OAuth2Authentication
+from rest_framework_oauth.authentication import OAuth2Authentication
+
 # Create your views here.
 from rest_framework.response import Response
 #######
@@ -27,8 +29,8 @@ from courseware.courses import get_course_with_access
 from rest_framework.views import APIView
 from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer
 from rest_framework import status
-
-
+from .edxrest import EdXConnection,EdXCourse
+from ipdb import set_trace
 
 
 #sh env的问题
@@ -38,13 +40,39 @@ class User(APIView):
     def get(self, request, format=None):
         return Response({"message": "user2 get","user":str(request.user)})
     def post(self, request, format=None):
-        serializer = UserSerializer(data=request.DATA)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             #serializer.data
             message = "from User2"
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class Course(APIView):
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAdminUser,)
+    def post(self, request):
+        #用户已经验证过了，，取得需要的参数
+        request_data = request.data
+        #serializer = CourseSerializer(data=request.data)
+        #course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
+        #set_trace()
+        serializer = CourseSerializer(data=request.data)
+        if  not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            session = request.COOKIES.get('sessionid','')
+            csrftoken = request.COOKIES.get('csrftoken','')
+            username =  serializer.data.get("username","")
+            org =  serializer.data.get("org","defaultOrg")
+            number =  serializer.data.get("number","defaultNumber")
+            run =  serializer.data.get("run","defaultRun")
+            course_name =  serializer.data.get("course_name","defaultCourse_name")
+            course = EdXCourse(org,number,run)
+            edx_studio = EdXConnection(session=session,server="http://127.0.0.1:8010",csrf=csrftoken)
+            result = edx_studio.create_course(course,course_name)
+            return Response(result)
+
+'''
 #for create course
 import  sys
 sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
@@ -66,9 +94,9 @@ class Course(APIView):
     def post(self, request, format=None):
         #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
         request.META["CONTENT_TYPE"]="application/json"
-        request_data = request.DATA
+        request_data = request.data
         course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
-        serializer = CourseSerializer(data=request.DATA)
+        serializer = CourseSerializer(data=request.data)
         if  not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -99,7 +127,7 @@ class Tab(APIView):
         return "tab ok"
     def post(self, request, format=None):
         #直接发一个json来说需要什么
-        serializer = TabSerializer(data=request.DATA)
+        serializer = TabSerializer(data=request.data)
         if  not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -109,7 +137,7 @@ class Tab(APIView):
             tab_list= request_data.get("tab_list","")
             result = self.change_tab_list(course_id,tab_list)
             return Response({"message":result,"request_data":request_data})
-
+'''
 class Grade(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
@@ -132,10 +160,10 @@ class Enrollment(APIView):
     def post(self, request, format=None):
         #使用序列化验证是否合理
         #用户是否存在 是否合理
-        serializer = EnrollmentSerializer(data=request.DATA)
+        serializer = EnrollmentSerializer(data=request.data)
         if  not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        data = request.DATA
+        data = request.data
         username = data["username"]
         course_id = data["course_id"]
         message = "ok"
@@ -144,10 +172,10 @@ class Enrollment(APIView):
         return Response({"message": message, "data": data})
     def delete(self, request, format=None):
         #这种资源命名为什么呢，抽象的资源，就叫用户注册的课程,接受用户和课程名
-        serializer = EnrollmentSerializer(data=request.DATA)
+        serializer = EnrollmentSerializer(data=request.data)
         if  not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        data = request.DATA
+        data = request.data
         username = data["username"]
         course_id = data["course_id"]
         succceed = self._course_unenroll(username,course_id)

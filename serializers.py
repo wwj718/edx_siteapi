@@ -18,7 +18,7 @@ class CourseSerializer(serializers.Serializer):
     org = serializers.CharField(max_length=100)
     number = serializers.CharField(max_length=100)
     run = serializers.CharField(max_length=100)
-    display_name = serializers.CharField(max_length=100)
+    course_name = serializers.CharField(max_length=100)
 
     def validate(self, data):
         username_or_email = data["username"]
