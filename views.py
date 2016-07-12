@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 #encoding: utf-8
-from django.shortcuts import render
+#from django.shortcuts import render
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework.authentication import SessionAuthentication #,OAuth2Authentication
 from rest_framework_oauth.authentication import OAuth2Authentication
@@ -13,13 +13,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from .create_users import create_user,delete_user
 from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
-from django.db import IntegrityError
+#from django.db import IntegrityError
 from django.contrib.auth.models import User
 
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from student.models import CourseEnrollment
-from instructor.offline_gradecalc import student_grades
-from courseware.courses import get_course_with_access
+#from instructor.offline_gradecalc import student_grades
+#from courseware.courses import get_course_with_access
 
 #注意当前rest框架版本为2.3.14，文档为：[rest-framework-2-docs](http://tomchristie.github.io/rest-framework-2-docs/)
 
@@ -30,7 +30,7 @@ from rest_framework.views import APIView
 from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer
 from rest_framework import status
 from .edxrest import EdXConnection,EdXCourse
-from ipdb import set_trace
+#from ipdb import set_trace
 
 
 #sh env的问题
@@ -72,43 +72,6 @@ class Course(APIView):
             result = edx_studio.create_course(course,course_name)
             return Response(result)
 
-'''
-#for create course
-import  sys
-sys.path.append("/edx/app/edxapp/edx-platform/cms/djangoapps")
-from contentstore.views import create_or_rerun_course
-from .utils import user_exist
-from rest_framework.reverse import reverse
-
-class Course(APIView):
-    authentication_classes = (SessionAuthentication,OAuth2Authentication,)
-    permission_classes = (IsAdminUser,)
-    def get(self, request,course_id, format=None):
-    #course_structure_api
-        course_url= reverse(
-                'course-updates-list',
-                kwargs={'course_id': course_id},
-                request=request,
-            )
-        return Response({"message": "get course ","course_url":course_url,"course_id":course_id})
-    def post(self, request, format=None):
-        #look at [expect_json](https://github.com/edx/edx-platform/blob/named-release/dogwood.rc/common/djangoapps/util/json_request.py#L34)
-        request.META["CONTENT_TYPE"]="application/json"
-        request_data = request.data
-        course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
-        serializer = CourseSerializer(data=request.data)
-        if  not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            #print type(request.user)
-            #print type(serializer.data.get("username",""))#unicode
-            request.user = user_exist(serializer.data.get("username",""))
-            #print str(request.user)
-        try:
-            data = create_or_rerun_course(request)
-        except:
-            pass
-        return Response({"message": "course ok","course_id":course_id,"request_data":request_data})
 
 from .models import CourseTab
 class Tab(APIView):
@@ -137,7 +100,7 @@ class Tab(APIView):
             tab_list= request_data.get("tab_list","")
             result = self.change_tab_list(course_id,tab_list)
             return Response({"message":result,"request_data":request_data})
-'''
+
 class Grade(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)

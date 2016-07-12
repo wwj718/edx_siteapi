@@ -2,10 +2,8 @@
 # encoding: utf-8
 
 from django.contrib.auth.models import User
-
-from django.contrib.auth.models import User
 from opaque_keys.edx.keys import CourseKey
-from xmodule.contentstore.django import contentstore
+#from xmodule.contentstore.django import contentstore
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore.django import modulestore
