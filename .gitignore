@@ -3,4 +3,3 @@
 *.egg-info
 .coverage
 dist/
-local.md
