@@ -168,14 +168,15 @@ class EdXCmsConnection(object):
         '''
         Make a new edX course
         '''
-        #print "Creating", course_name
+        print "Creating", course_name
         url = "/course/"
         payload = {"org": course.org,
                    "number": course.number,
                    "run": course.run,
                    "display_name": course_name}
         r = self.ajax(url, payload)
-        print r
+        #print r
+        return r
 
     def add_author_to_course(self, course, author_email):
         print "Adding", author_email, "to", course.course_string()

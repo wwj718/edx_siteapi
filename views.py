@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-d#from django.shortcuts import render
+#from django.shortcuts import render
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework.authentication import SessionAuthentication #,OAuth2Authentication
 from rest_framework_oauth.authentication import OAuth2Authentication
@@ -45,8 +45,10 @@ class UserView(APIView):
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 '''
+sessionid = "1tovv2fdpkcdy1gnov1rbs00pdnmzgo9"
+csrftoken = "uI9UIfgiIv4dUNNmN4iejwNYWR2inzbF"
 class Course(APIView):
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (SessionAuthentication,OAuth2Authentication)
     permission_classes = (IsAdminUser,)
     def post(self, request):
         #用户已经验证过了，，取得需要的参数
@@ -58,16 +60,18 @@ class Course(APIView):
         if  not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            session = request.COOKIES.get('sessionid','')
-            csrftoken = request.COOKIES.get('csrftoken','')
+            #session = request.COOKIES.get('sessionid','')
+            #csrftoken = request.COOKIES.get('csrftoken','')
             username =  serializer.data.get("username","")
             org =  serializer.data.get("org","defaultOrg")
             number =  serializer.data.get("number","defaultNumber")
             run =  serializer.data.get("run","defaultRun")
             course_name =  serializer.data.get("course_name","defaultCourse_name")
             course = EdXCourse(org,number,run)
-            edx_studio = EdXCmsConnection(session=session,server="http://127.0.0.1:8010",csrf=csrftoken)
+            edx_studio = EdXCmsConnection(session=sessionid,server="http://127.0.0.1:8010",csrf=csrftoken)
             result = edx_studio.create_course(course,course_name)
+            with open("./test.log","w") as f :
+                f.write(result)
             return Response(result)
 
 

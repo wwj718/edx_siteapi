@@ -21,7 +21,7 @@ class CourseSerializer(serializers.Serializer):
     course_name = serializers.CharField(max_length=100)
 
     def validate(self, data):
-        username_or_email = data["username"]
+        username_or_email = data["username"] # 创建者？
         user = user_exist(username_or_email)
         if not user:
             raise serializers.ValidationError(u'用户不存在')

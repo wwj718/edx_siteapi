@@ -17,10 +17,10 @@
 #在dogwood中使用
 ```bash
 cd /edx/app/edxapp/edx-platform/lms/djangoapps/
-sudo git clone -b clean_dogwood https://github.com/wwj718/edx_siteapi "siteapi"
+sudo git clone  https://github.com/wwj718/edx_siteapi "siteapi"
 sudo chown edxapp:edxapp siteapi
-sudo /edx/bin/pip.edxapp install -r siteapi/requirements.txt
 sudo ./siteapi/add_the_app.sh
+/edx/bin/python.edxapp  /edx/app/edxapp/edx-platform/manage.py lms syncdb --settings=aws
 ```
 
 #调试
@@ -32,10 +32,10 @@ sudo ./siteapi/add_the_app.sh
 ###access
 (ps:sessionid和csrftoken到浏览器获取)
 
-http http://127.0.0.1:5000/siteapi/access  "Cookie:sessionid=aaa;csrftoken=bbb" X-CSRFToken:bbb
+http http://127.0.0.1:5000/siteapi/access  "Cookie:sessionid=aaa;csrftoken=bbb" X-CSRFToken:bbb  //直接作为浏览器访问？而不是通过access token？
 
 ###create course
-*  http post http://127.0.0.1:5000/siteapi/course  "Cookie:sessionid=aaa;csrftoken=bbb" X-CSRFToken:bbb org=json_org number=json_number run=json_run course_name=json_display_name username=wwj
+*  http post http://127.0.0.1:5000/siteapi/course  "AUTHORIZATION: Bearer xxx" org=json_org number=json_number run=json_run course_name=json_display_name username=wwj
 
 ###contral tab
 *  http  post http://127.0.0.1:5000/siteapi/tab   tab_list=courseware+info+forum course_id=course-v1:edX+DemoX+Demo_Course username=staff  "AUTHORIZATION: Bearer xxx"
@@ -49,6 +49,8 @@ http http://127.0.0.1:5000/siteapi/access  "Cookie:sessionid=aaa;csrftoken=bbb" 
 使用`http://httpbin.org/`,原因返回你发送的http请求
 
 *  http post http://httpbin.org/post tab_list=courseware+info+forum "Authorization: Bearer xxx"
+
+
 
 #相似项目
 *  [pmitros/edx-rest](https://github.com/pmitros/edx-rest/blob/master/src/edxrest.py)
