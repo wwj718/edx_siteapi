@@ -171,32 +171,5 @@ class Enrollment(APIView):
         except:
             return False
 
-from django.conf import settings
-access_key = getattr(settings,  "QINIU_ACCESS_KEY", None)
-#access_key = None
-class Qiniu(APIView):
-    if access_key:
-        from qiniu import Auth
-        authentication_classes = (SessionAuthentication,OAuth2Authentication,)
-        permission_classes = (IsAuthenticated,)
-        access_key = getattr(settings,  "QINIU_ACCESS_KEY", None)
-        secret_key = getattr(settings,  "QINIU_SECRET_KEY", None)
-        q = Auth(access_key, secret_key) # access_key和secret_key来自settings里
-        def get_test_uptoken(self,request):
-            bucket_name = "wwj-test"
-            key = "key-test"
-            # 上传策略有许多可选的参数，方便服务于业务逻辑：参考[python-sdk](http://developer.qiniu.com/docs/v6/sdk/python-sdk.html)
-            token = self.q.upload_token(bucket_name, key)
-            return token
-        def get(self, request, format=None):
-            test_uptoken = self.get_test_uptoken(request)
-            return Response({"message": test_uptoken})
-    else:
-        pass
-#使用装饰器 改变return
-def dec(func):
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        result['c'] = 3
-        return result
-    return wrapper
+# 移除七牛了ast实验部分
+# 七牛云视频管理组件单独做成一个django app，采用restful接口
