@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-#encoding: utf-8
-#from django.shortcuts import render
+d#from django.shortcuts import render
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework.authentication import SessionAuthentication #,OAuth2Authentication
 from rest_framework_oauth.authentication import OAuth2Authentication
@@ -29,12 +28,11 @@ from student.models import CourseEnrollment
 from rest_framework.views import APIView
 from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer
 from rest_framework import status
-from .edxrest import EdXConnection,EdXCourse
+from .edx_cms_rest import EdXCmsConnection,EdXCourse #先处理cms:只要创建课程功能 ,其他都放在lms里
 #from ipdb import set_trace
 
-
-#sh env的问题
-class User(APIView):
+'''
+class UserView(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
     def get(self, request, format=None):
@@ -46,7 +44,7 @@ class User(APIView):
             message = "from User2"
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+'''
 class Course(APIView):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAdminUser,)
@@ -68,7 +66,7 @@ class Course(APIView):
             run =  serializer.data.get("run","defaultRun")
             course_name =  serializer.data.get("course_name","defaultCourse_name")
             course = EdXCourse(org,number,run)
-            edx_studio = EdXConnection(session=session,server="http://127.0.0.1:8010",csrf=csrftoken)
+            edx_studio = EdXCmsConnection(session=session,server="http://127.0.0.1:8010",csrf=csrftoken)
             result = edx_studio.create_course(course,course_name)
             return Response(result)
 

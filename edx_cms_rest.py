@@ -1,5 +1,4 @@
 '''
-fork from https://github.com/pmitros/edx-rest
 This file contains the library, for now.
 '''
 from datetime import datetime
@@ -14,19 +13,13 @@ from collections import namedtuple
 
 # Sessions are stored in cookies. Each server can have its own cookie
 # for this. We just set all the possible ones.
-sessionid_strings = ["sessionid",
-                     "prod-edge-sessionid"]
+sessionid_strings = ["sessionid", "prod-edge-sessionid"]
 
 # Ditto for CSRF tokens
-csrf_token_strings = ["csrftoken",
-                      "prod-edx-csrftoken",
-                      "prod-edge-csrftoken"]
+csrf_token_strings = ["csrftoken", "prod-edx-csrftoken", "prod-edge-csrftoken"]
 
 # Basic cookies we just need to talk to edX
-baseline_cookies = {
-    "djdt": "hide",
-    "edxloggedin": "true",
-}
+baseline_cookies = {"djdt": "hide", "edxloggedin": "true", }
 
 # Basic headers we need just to talk to edX
 baseline_headers = {
@@ -63,17 +56,19 @@ class EdXCourse(namedtuple("course_tuple", ["org", "number", "run"])):
     >>> print x.course_string()
     course-v1:edx+edx101+2000
     '''
+
     def course_string(self):
         return "course-v1:{org}+{number}+{run}".format(org=self.org,
                                                        number=self.number,
                                                        run=self.run)
+
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
 
-class EdXConnection(object):
+class EdXCmsConnection(object):
     def __init__(self,
                  session=None,
                  server="http://127.0.0.1:8001",
@@ -142,8 +137,7 @@ class EdXConnection(object):
         '''
         (headers, cookies) = self.compile_header(
             response_format=response_format,
-            request_format=request_format
-        )
+            request_format=request_format)
         if request_format == DATA_FORMATS.AJAX and \
            method != METHODS.GET:
             payload = json.dumps(payload)
@@ -153,26 +147,24 @@ class EdXConnection(object):
                 kwargs['data'] = payload
             if files:
                 kwargs['files'] = payload
-            r = requests.post(self.server+url,
+            r = requests.post(self.server + url,
                               cookies=cookies,
                               headers=headers,
                               **kwargs)
         elif method == METHODS.GET:
             if payload:
-                #print payload
+                print payload
                 raise "Payload doesn't work with get"
-            r = requests.get(self.server+url,
+            r = requests.get(self.server + url,
                              cookies=cookies,
                              headers=headers)
 
         if response_format == DATA_FORMATS.AJAX:
-            #print r.text
+            print r.text
             return json.loads(r.text)
         return r
 
-    def create_course(self,
-                      course,
-                      course_name):
+    def create_course(self, course, course_name):
         '''
         Make a new edX course
         '''
@@ -183,20 +175,16 @@ class EdXConnection(object):
                    "run": course.run,
                    "display_name": course_name}
         r = self.ajax(url, payload)
-        return r
+        print r
 
-    def add_author_to_course(self,
-                             course,
-                             author_email):
-        #print "Adding", author_email, "to", course.course_string()
+    def add_author_to_course(self, course, author_email):
+        print "Adding", author_email, "to", course.course_string()
         url = "/course_team/{course}/{author_email}"
         url = url.format(course=course.course_string(),
                          author_email=author_email)
         payload = {"role": "instructor"}
-        r = self.ajax(url,
-                      payload=payload,
-                      response_format=DATA_FORMATS.NONE)
-        #print r, r.text
+        r = self.ajax(url, payload=payload, response_format=DATA_FORMATS.NONE)
+        print r, r.text
 
     def download_course(self, course, filepointer, close=True):
         '''
@@ -219,10 +207,6 @@ class EdXConnection(object):
     def upload_course(self, course, filepointer):
         url = "/import/{course}"
         url = url.format(course=course.course_string())
-        files = {'course-data': ("course.tar.gz",
-                                 filepointer.read(),
-                                 "application/gzip",
-                                 {})}
-        r = self.ajax(url,
-                      files=files,
-                      request_format=DATA_FORMATS.TARBALL)
+        files = {'course-data': ("course.tar.gz", filepointer.read(),
+                                 "application/gzip", {})}
+        r = self.ajax(url, files=files, request_format=DATA_FORMATS.TARBALL)

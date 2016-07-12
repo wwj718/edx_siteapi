@@ -44,8 +44,6 @@ http http://127.0.0.1:5000/siteapi/access  "Cookie:sessionid=aaa;csrftoken=bbb" 
 *  http post http://127.0.0.1:5000/siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username=staff "Authorization: Bearer xxx"
 *  http delete http://127.0.0.1:5000/siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username=staff "Authorization: Bearer xxx"
 
-###qiniu
-http  http://127.0.0.1:5000/siteapi/qiniu "Authorization: Bearer xxx"  (get upload_token)
 
 ###调试请求参数
 使用`http://httpbin.org/`,原因返回你发送的http请求
@@ -54,3 +52,4 @@ http  http://127.0.0.1:5000/siteapi/qiniu "Authorization: Bearer xxx"  (get uplo
 
 #相似项目
 *  [pmitros/edx-rest](https://github.com/pmitros/edx-rest/blob/master/src/edxrest.py)
+*  [edx_manager_rest](https://github.com/wwj718/edx_manager_rest)

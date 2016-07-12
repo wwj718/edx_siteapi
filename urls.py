@@ -8,7 +8,7 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     #base class
-    url(r'^user$', views.User.as_view()),
+    #url(r'^user$', views.UserView.as_view()),
     url(r'^course$', views.Course.as_view()),
     #url(r'^course/({})?$'.format(settings.COURSE_ID_PATTERN), views.Course.as_view()),
     url(r'^tab$', views.Tab.as_view()),
