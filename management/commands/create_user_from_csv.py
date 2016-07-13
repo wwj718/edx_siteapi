@@ -52,10 +52,11 @@ class Command(TrackedCommand):
         with open(csv) as f:
             f_csv = unicodecsv.DictReader(f, encoding='utf-8')
             for item in f_csv:
-                print item[u"姓名"]
-                username = item[u"学号"]
+                # 约定优于配置，假设有username(建议用学号),password，email，不同名的在csv中应该进行格式化(只需要改header字段)
+                print item[u"username"]
+                username = item[u"username"]
                 email = item[u"email"]
-                name = item[u"姓名"]
+                name = item[u"name"]
                 password = username
                 create_user(username, password, email, name)
         # 缺乏读写csv的技巧,next和边界，按header读取
