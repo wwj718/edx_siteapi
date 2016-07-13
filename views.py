@@ -45,8 +45,8 @@ class UserView(APIView):
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 '''
-sessionid = "1tovv2fdpkcdy1gnov1rbs00pdnmzgo9"
-csrftoken = "uI9UIfgiIv4dUNNmN4iejwNYWR2inzbF"
+sessionid = "qc7t8b9w1bkwmsa5zd502200cq4365bq"
+csrftoken = "NP1sMffTbjsflaCV90tR0J5XW3B3F2gT"
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication)
     permission_classes = (IsAdminUser,)
@@ -70,8 +70,8 @@ class Course(APIView):
             course = EdXCourse(org,number,run)
             edx_studio = EdXCmsConnection(session=sessionid,server="http://127.0.0.1:8010",csrf=csrftoken)
             result = edx_studio.create_course(course,course_name)
-            with open("./test.log","w") as f :
-                f.write(result)
+            #with open("./test.log","w") as f :
+            #    f.write(result)
             return Response(result)
 
 

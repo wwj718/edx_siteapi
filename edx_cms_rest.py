@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 '''
 This file contains the library, for now.
 '''
@@ -160,7 +162,7 @@ class EdXCmsConnection(object):
                              headers=headers)
 
         if response_format == DATA_FORMATS.AJAX:
-            print r.text
+            print r.text #print r.text #如果session有错则会报错，重启机器会造成session失效,观察resopnse是否正常
             return json.loads(r.text)
         return r
 
