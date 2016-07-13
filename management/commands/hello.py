@@ -7,5 +7,7 @@ from django.db import models
 import os
 
 class Command(BaseCommand):
-     def handle(self, *args, **options):
-         print 'hello,edx!'
+    help = u'批量导入用户'
+    def handle(self, *args, **options):
+        #print 'hello,edx!'
+        self.stdout.write(u"导入成功!", ending='')
