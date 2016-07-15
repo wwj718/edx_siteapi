@@ -46,6 +46,13 @@ http post http://119.254.98.58:5000/siteapi/tab tab_list=courseware+info+forum c
 
 http post http://119.254.98.58:5000/siteapi/teacher course_id=course-v1:edX+DemoX+Demo_Course  username="staff" "AUTHORIZATION: Bearer  687f0d89069886911a4b08e7aae0c34ad5199b73"
 
+### 批量选课（课程创建时）
+需要lms session
+
+
+
+http post http://119.254.98.58:5000/siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course  username_list="staff,201011" "AUTHORIZATION: Bearer  687f0d89069886911a4b08e7aae0c34ad5199b73"
+
 # 问题
 ### 关机之后cookie失效
 

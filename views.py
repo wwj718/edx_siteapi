@@ -29,6 +29,7 @@ from rest_framework.views import APIView
 from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer,TeacherSerializer
 from rest_framework import status
 from .edx_cms_rest import EdXCmsConnection,EdXCourse #先处理cms:只要创建课程功能 ,其他都放在lms里
+from .edx_lms_rest import EdXLmsConnection
 #from ipdb import set_trace
 
 '''
@@ -45,8 +46,16 @@ class UserView(APIView):
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 '''
+
+
 sessionid = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
 csrftoken = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X"
+
+sessionid_lms = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
+csrftoken_lms = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X" #前后端一样？
+
+
+
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication)
     permission_classes = (IsAdminUser,)
@@ -103,6 +112,33 @@ class Teacher(APIView):
             return Response(result)
 
 
+class Enrollment(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication)
+    permission_classes = (IsAdminUser,)
+    def post(self, request):
+        #用户已经验证过了，，取得需要的参数
+        request_data = request.data
+        #serializer = CourseSerializer(data=request.data)
+        #course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
+        #set_trace()
+        serializer =EnrollmentSerializer(data=request.data)
+        if  not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            #session = request.COOKIES.get('sessionid','')
+            #csrftoken = request.COOKIES.get('csrftoken','')
+            username =  serializer.data.get("username_list","")
+            course_id=  serializer.data.get("course_id","")
+            # 把course_id解析为三元组
+            course_key = CourseKey.from_string(course_id)
+            (org,number,run)= (course_key.org,course_key.course,course_key.run)
+            course = EdXCourse(org,number,run)
+            edx_lms = EdXLmsConnection(session=sessionid,server="http://127.0.0.1:8000",csrf=csrftoken)
+            result = edx_lms.students_update_enrollment(course,username)
+            #with open("./test.log","w") as f :
+            #    f.write(result)
+            return Response(result)
+
 
 
 from .models import CourseTab
@@ -148,7 +184,7 @@ class Access(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, format=None):
         return Response({"message": "Access ok "})
-
+'''
 class Enrollment(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication,)
     permission_classes = (IsAdminUser,)
@@ -194,5 +230,6 @@ class Enrollment(APIView):
         except:
             return False
 
+'''
 # 移除七牛了ast实验部分
 # 七牛云视频管理组件单独做成一个django app，采用restful接口

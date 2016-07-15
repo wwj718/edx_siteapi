@@ -68,7 +68,7 @@ if __name__ == "__main__":
     doctest.testmod()
 
 
-class EdXConnection(object):
+class EdXLmsConnection(object):
     def __init__(self,
                  session=None,
                  server="http://127.0.0.1:8001",
@@ -167,6 +167,7 @@ class EdXConnection(object):
     def students_update_enrollment(self,course,student_email):
         """TODO: Docstring for enrollment.
         /courses/course-v1:test_org+121224+test_run/instructor/api/students_update_enrollment
+        default is enroll
         """
         print "Adding",student_email, "to", course.course_string()
         base_url = "/courses/{course}/instructor/api/students_update_enrollment"
