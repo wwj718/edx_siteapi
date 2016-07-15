@@ -48,8 +48,8 @@ class UserView(APIView):
 '''
 
 
-sessionid = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
-csrftoken = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X"
+sessionid_cms = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
+csrftoken_cms = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X"
 
 sessionid_lms = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
 csrftoken_lms = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X" #前后端一样？
@@ -77,7 +77,7 @@ class Course(APIView):
             run =  serializer.data.get("run","defaultRun")
             course_name =  serializer.data.get("course_name","defaultCourse_name")
             course = EdXCourse(org,number,run)
-            edx_studio = EdXCmsConnection(session=sessionid,server="http://127.0.0.1:8010",csrf=csrftoken)
+            edx_studio = EdXCmsConnection(session=sessionid_cms,server="http://127.0.0.1:8010",csrf=csrftoken_cms)
             result = edx_studio.create_course(course,course_name)
             #with open("./test.log","w") as f :
             #    f.write(result)
@@ -105,7 +105,7 @@ class Teacher(APIView):
             course_key = CourseKey.from_string(course_id)
             (org,number,run)= (course_key.org,course_key.course,course_key.run)
             course = EdXCourse(org,number,run)
-            edx_studio = EdXCmsConnection(session=sessionid,server="http://127.0.0.1:8010",csrf=csrftoken)
+            edx_studio = EdXCmsConnection(session=sessionid_cms,server="http://127.0.0.1:8010",csrf=csrftoken_cms)
             result = edx_studio.add_author_to_course(course,username)
             #with open("./test.log","w") as f :
             #    f.write(result)
@@ -133,7 +133,7 @@ class Enrollment(APIView):
             course_key = CourseKey.from_string(course_id)
             (org,number,run)= (course_key.org,course_key.course,course_key.run)
             course = EdXCourse(org,number,run)
-            edx_lms = EdXLmsConnection(session=sessionid,server="http://127.0.0.1:8000",csrf=csrftoken)
+            edx_lms = EdXLmsConnection(session=sessionid_lms,server="http://127.0.0.1:8000",csrf=csrftoken_lms)
             result = edx_lms.students_update_enrollment(course,username)
             #with open("./test.log","w") as f :
             #    f.write(result)
