@@ -5,7 +5,7 @@
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework.authentication import SessionAuthentication #,OAuth2Authentication
 from rest_framework_oauth.authentication import OAuth2Authentication
-
+from opaque_keys.edx.keys import CourseKey
 # Create your views here.
 from rest_framework.response import Response
 #######
@@ -26,7 +26,7 @@ from student.models import CourseEnrollment
 #改为类的写法
 # 使用序列化来验证参数
 from rest_framework.views import APIView
-from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer
+from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer,TeacherSerializer
 from rest_framework import status
 from .edx_cms_rest import EdXCmsConnection,EdXCourse #先处理cms:只要创建课程功能 ,其他都放在lms里
 #from ipdb import set_trace
@@ -45,8 +45,8 @@ class UserView(APIView):
             return Response({"message": message, "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 '''
-sessionid = "qc7t8b9w1bkwmsa5zd502200cq4365bq"
-csrftoken = "NP1sMffTbjsflaCV90tR0J5XW3B3F2gT"
+sessionid = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
+csrftoken = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X"
 class Course(APIView):
     authentication_classes = (SessionAuthentication,OAuth2Authentication)
     permission_classes = (IsAdminUser,)
@@ -73,6 +73,36 @@ class Course(APIView):
             #with open("./test.log","w") as f :
             #    f.write(result)
             return Response(result)
+
+
+class Teacher(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication)
+    permission_classes = (IsAdminUser,)
+    def post(self, request):
+        #用户已经验证过了，，取得需要的参数
+        request_data = request.data
+        #serializer = CourseSerializer(data=request.data)
+        #course_id = "course-v1:{org}+{number}+{run}".format(org=request_data.get("org","defaultOrg"),number=request_data.get("number","defaultNumber"),run=request_data.get("run","defaultRun"))
+        #set_trace()
+        serializer = TeacherSerializer(data=request.data)
+        if  not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            #session = request.COOKIES.get('sessionid','')
+            #csrftoken = request.COOKIES.get('csrftoken','')
+            username =  serializer.data.get("username","")
+            course_id=  serializer.data.get("course_id","")
+            # 把course_id解析为三元组
+            course_key = CourseKey.from_string(course_id)
+            (org,number,run)= (course_key.org,course_key.course,course_key.run)
+            course = EdXCourse(org,number,run)
+            edx_studio = EdXCmsConnection(session=sessionid,server="http://127.0.0.1:8010",csrf=csrftoken)
+            result = edx_studio.add_author_to_course(course,username)
+            #with open("./test.log","w") as f :
+            #    f.write(result)
+            return Response(result)
+
+
 
 
 from .models import CourseTab

@@ -28,12 +28,22 @@ class CourseSerializer(serializers.Serializer):
         else:
             return data
 
+class TeacherSerializer(serializers.Serializer):
+    course_id = serializers.CharField(max_length=100)
+    username = serializers.CharField(max_length=100)
+    def validate(self, data):
+        course_id = data["course_id"]
+        username_or_email = data["username"]
+        if not user_exist(username_or_email):
+            raise serializers.ValidationError(u'用户不存在')
+        if not check_course_id(course_id):
+            raise serializers.ValidationError(u'course_id不存在')
+        return data
+
 
 class TabSerializer(serializers.Serializer):
     course_id = serializers.CharField(max_length=100)
     tab_list = serializers.CharField(max_length=100)
-    def  _check_course_id():
-        pass
     def validate(self, data):
         course_id = data["course_id"]
         if not check_course_id(course_id):

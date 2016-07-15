@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     #base class
     #url(r'^user$', views.UserView.as_view()),
     url(r'^course$', views.Course.as_view()),
+    url(r'^teacher$', views.Teacher.as_view()),
     #url(r'^course/({})?$'.format(settings.COURSE_ID_PATTERN), views.Course.as_view()),
     url(r'^tab$', views.Tab.as_view()),
     url(r'^enrollment$', views.Enrollment.as_view()),

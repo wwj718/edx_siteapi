@@ -39,3 +39,17 @@ sudo -u www-data /edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py l
 sudo -u www-data /edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py lms  create_user --username test123 --name test123  --password test123 --email test123@qq.com --settings devstack
 
 
+### tab
+http post http://119.254.98.58:5000/siteapi/tab tab_list=courseware+info+forum course_id=course-v1:edX+DemoX+Demo_Course  "AUTHORIZATION: Bearer 687f0d89069886911a4b08e7aae0c34ad5199b73"
+
+### 添加老师
+
+http post http://119.254.98.58:5000/siteapi/teacher course_id=course-v1:edX+DemoX+Demo_Course  username="staff" "AUTHORIZATION: Bearer  687f0d89069886911a4b08e7aae0c34ad5199b73"
+
+# 问题
+### 关机之后cookie失效
+
+# todo
+*  tab
+*  添加老师
+*  学生选课
