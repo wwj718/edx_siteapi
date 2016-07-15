@@ -24,6 +24,8 @@ for name in os.listdir("."):
 sudo mv lms.conf_bak lms.conf
 sudo mv cms.conf_bak cms.conf
 
+# sudo /edx/bin/supervisorctl restart all
+
 ```
 
 
