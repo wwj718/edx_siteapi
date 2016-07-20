@@ -50,6 +50,19 @@ class TabSerializer(serializers.Serializer):
             raise serializers.ValidationError(u'course_id不存在')
         return data
 
+class SessionSerializer(serializers.Serializer):
+    sessionid_lms = serializers.CharField(max_length=100)
+    sessionid_cms = serializers.CharField(max_length=100)
+    csrftoken_cms = serializers.CharField(max_length=100)
+    csrftoken_lms = serializers.CharField(max_length=100)
+    def validate(self, data):
+        for value in data.values():
+            if len(value) != 32:
+                raise serializers.ValidationError(u'{} 有误'.format(value))
+        return data
+
+
+
 class EnrollmentSerializer(serializers.Serializer):
     course_id = serializers.CharField(max_length=100)
     username_list = serializers.CharField(max_length=100)

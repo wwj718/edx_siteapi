@@ -12,6 +12,7 @@ import shutil
 import tempfile
 
 from collections import namedtuple
+from ipdb import set_trace
 
 # Sessions are stored in cookies. Each server can have its own cookie
 # for this. We just set all the possible ones.
@@ -161,9 +162,17 @@ class EdXCmsConnection(object):
                              cookies=cookies,
                              headers=headers)
 
+
         if response_format == DATA_FORMATS.AJAX:
-            print r.text #print r.text #如果session有错则会报错，重启机器会造成session失效,观察resopnse是否正常
-            return json.loads(r.text)
+            #print r.text json字符串. 如果正确应该是json，否则错误
+            #改为只有正确才通过
+            #调试看r.json, JSONDecodeError ，登录有误
+            #set_trace()
+            try:
+                response = json.loads(r.text)
+            except ValueError:
+                response =  {"error":u"请联系管理员，session_id有误"}
+            return response
         return r
 
     def create_course(self, course, course_name):

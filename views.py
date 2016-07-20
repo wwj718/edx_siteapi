@@ -17,6 +17,8 @@ from django.contrib.auth.models import User
 
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from student.models import CourseEnrollment
+import yaml
+
 #from instructor.offline_gradecalc import student_grades
 #from courseware.courses import get_course_with_access
 
@@ -26,7 +28,7 @@ from student.models import CourseEnrollment
 #改为类的写法
 # 使用序列化来验证参数
 from rest_framework.views import APIView
-from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer,TeacherSerializer
+from serializers import UserSerializer,TabSerializer,EnrollmentSerializer,CourseSerializer,TeacherSerializer,SessionSerializer
 from rest_framework import status
 from .edx_cms_rest import EdXCmsConnection,EdXCourse #先处理cms:只要创建课程功能 ,其他都放在lms里
 from .edx_lms_rest import EdXLmsConnection
@@ -47,12 +49,22 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 '''
 
+session_file = "/edx/app/edxapp/session.yml"
 
-sessionid_cms = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
-csrftoken_cms = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X"
 
-sessionid_lms = "t9vcvyjv1ouh72dzv3cvd4hbjxzy7z9u"
-csrftoken_lms = "JMsSdvthE03wwB6bxA1rbWd1MGJ2wb0X" #前后端一样？
+
+def get_session_config():
+    with open(session_file,'r') as f:
+        config = yaml.load(f)
+
+    # 开发环境 这些东西好像只加载一次，修改文件后没有被刷新
+    # 变为函数
+    return config
+
+#sessionid_cms = config.get("sessionid_cms","")
+#csrftoken_cms = config.get("csrftoken_cms","")
+#sessionid_lms = config.get("sessionid_lms","")
+#csrftoken_lms = config.get("csrftoken_lms","")
 
 
 
@@ -77,7 +89,7 @@ class Course(APIView):
             run =  serializer.data.get("run","defaultRun")
             course_name =  serializer.data.get("course_name","defaultCourse_name")
             course = EdXCourse(org,number,run)
-            edx_studio = EdXCmsConnection(session=sessionid_cms,server="http://127.0.0.1:8010",csrf=csrftoken_cms)
+            edx_studio = EdXCmsConnection(session=get_session_config()["sessionid_cms"],server="http://127.0.0.1:8010",csrf=get_session_config()["csrftoken_cms"])
             result = edx_studio.create_course(course,course_name)
             #with open("./test.log","w") as f :
             #    f.write(result)
@@ -105,7 +117,7 @@ class Teacher(APIView):
             course_key = CourseKey.from_string(course_id)
             (org,number,run)= (course_key.org,course_key.course,course_key.run)
             course = EdXCourse(org,number,run)
-            edx_studio = EdXCmsConnection(session=sessionid_cms,server="http://127.0.0.1:8010",csrf=csrftoken_cms)
+            edx_studio = EdXCmsConnection(session=get_session_config()["sessionid_cms"],server="http://127.0.0.1:8010",csrf=get_session_config()["csrftoken_cms"])
             result = edx_studio.add_author_to_course(course,username)
             #with open("./test.log","w") as f :
             #    f.write(result)
@@ -133,11 +145,31 @@ class Enrollment(APIView):
             course_key = CourseKey.from_string(course_id)
             (org,number,run)= (course_key.org,course_key.course,course_key.run)
             course = EdXCourse(org,number,run)
-            edx_lms = EdXLmsConnection(session=sessionid_lms,server="http://127.0.0.1:8000",csrf=csrftoken_lms)
+            edx_lms = EdXLmsConnection(session=get_session_config()["sessionid_lms"],server="http://127.0.0.1:8000",csrf=get_session_config()["csrftoken_lms"])
             result = edx_lms.students_update_enrollment(course,username)
             #with open("./test.log","w") as f :
             #    f.write(result)
             return Response(result)
+
+
+class Session(APIView):
+    authentication_classes = (SessionAuthentication,OAuth2Authentication)
+    permission_classes = (IsAdminUser,)
+    def post(self, request):
+        request_data = request.data
+        serializer = SessionSerializer(data=request.data)
+        if  not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            #sessionid_lms =  serializer.data.get("sessionid_lms","")
+            #sessionid_cms =  serializer.data.get("sessionid_cms","")
+            #csrftoken_cms =  serializer.data.get("csrftoken_cms","")
+            #csrftoken_lms =  serializer.data.get("csrftoken_lms","")
+            with open(session_file,"w") as f :
+                f.write(yaml.dump(dict(serializer.data), default_flow_style=False))
+            response = {"message":u"重置成功！"}
+            return Response(response)
+
 
 
 
