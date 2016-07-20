@@ -5,8 +5,28 @@ ip: http://119.254.98.58:19880/
 # 服务器
 sudo -u www-data /edx/bin/python.edxapp /edx/app/edxapp/edx-platform/manage.py lms runserver 0.0.0.0:5000 --settings devstack
 
+http://119.254.98.58:5000
+
+### 测试服务器
 测试地址:http://119.254.98.58:19880/
 
+取消不必要的服务
+
+```
+cd /edx/app/supervisor/conf.available.d
+sudo ipython
+
+for name in os.listdir("."):
+		new_name=name.replace('.conf','.conf_bak')
+		os.rename(name,new_name)
+		
+#开启lms/cms
+sudo mv lms.conf_bak lms.conf
+sudo mv cms.conf_bak cms.conf
+
+# sudo /edx/bin/supervisorctl restart all
+
+```
 
 
 ## access

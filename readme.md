@@ -11,7 +11,7 @@
 *  用户管理（增删）
 *  课程创建
 *  成绩查询
-*  注册课程x' (xxxxxxxxx为你的access token )
+*  注册课程(xxxxxxxxx为你的access token )
 *  http post http://127.0.0.1:5000/siteapi/user username=wwj password=wwj 'Authorization: Bearer xxx'
 
 #在dogwood中使用
@@ -26,29 +26,43 @@ sudo ./siteapi/add_the_app.sh
 #调试
 安装[httpie](https://github.com/jkbrzt/httpie)
 
+
+
 ###获取access token
 [enable Open edX REST APIs](http://blog.just4fun.site/edx-api.html),只要进入/admin,取得有效access token即可
 
-###access
-(ps:sessionid和csrftoken到浏览器获取)
-
-http http://127.0.0.1:5000/siteapi/access  "Cookie:sessionid=aaa;csrftoken=bbb" X-CSRFToken:bbb  //直接作为浏览器访问？而不是通过access token？
-
-###create course
-*  http post http://127.0.0.1:5000/siteapi/course  "AUTHORIZATION: Bearer xxx" org=json_org number=json_number run=json_run course_name=json_display_name username=wwj
-
-###contral tab
-*  http  post http://127.0.0.1:5000/siteapi/tab   tab_list=courseware+info+forum course_id=course-v1:edX+DemoX+Demo_Course username=staff  "AUTHORIZATION: Bearer xxx"
-
-###enrollment
-*  http post http://127.0.0.1:5000/siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username=staff "Authorization: Bearer xxx"
-*  http delete http://127.0.0.1:5000/siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username=staff "Authorization: Bearer xxx"
+### 设置session 和 csrf
+http post /siteapi/session  "AUTHORIZATION: Bearer xxx" sessionid_lms=xxx  csrftoken_lms=xxx sessionid_cms=xxx csrftoken_cms=xxx
 
 
-###调试请求参数
+### create course （创建课程）
+*  http post /siteapi/course  "AUTHORIZATION: Bearer xxx" org=json_org number=json_number run=json_run course_name=json_display_name username=wwj
+
+### 为课程添加老师
+
+http post /siteapi/teacher course_id=course-v1:edX+DemoX+Demo_Course username="staff" "AUTHORIZATION: Bearer 687f0d89069886911a4b08e7aae0c34ad5199b73"
+
+### contral tab （调整课程默认标签）
+*  http  post /siteapi/tab   tab_list=courseware+info+forum course_id=course-v1:edX+DemoX+Demo_Course username=staff  "AUTHORIZATION: Bearer xxx"
+
+### enrollment(批量选课（课程创建时）)
+ps:需要lms session
+
+http post /siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username_list="staff,201011" "AUTHORIZATION: Bearer 687f0d89069886911a4b08e7aae0c34ad5199b73"te /siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username=staff "Authorization: Bearer xxx"
+
+
+# 问题提醒
+Open edX系统关机之后cookie失效，接口依赖于cookie，所以重启机器之后需要重新相关做配置
+
+### todo
+使用接口允许外置。
+
+# 调试请求参数
 使用`http://httpbin.org/`,原因返回你发送的http请求
 
 *  http post http://httpbin.org/post tab_list=courseware+info+forum "Authorization: Bearer xxx"
+
+
 
 
 
