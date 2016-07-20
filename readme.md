@@ -50,10 +50,18 @@ ps:需要lms session
 http post /siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username_list="staff,201011" "AUTHORIZATION: Bearer 687f0d89069886911a4b08e7aae0c34ad5199b73"te /siteapi/enrollment course_id=course-v1:edX+DemoX+Demo_Course username=staff "Authorization: Bearer xxx"
 
 
-###调试请求参数
+# 问题提醒
+Open edX系统关机之后cookie失效，接口依赖于cookie，所以重启机器之后需要重新相关做配置
+
+### todo
+使用接口允许外置。
+
+# 调试请求参数
 使用`http://httpbin.org/`,原因返回你发送的http请求
 
 *  http post http://httpbin.org/post tab_list=courseware+info+forum "Authorization: Bearer xxx"
+
+
 
 
 
