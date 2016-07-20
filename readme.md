@@ -26,13 +26,16 @@ sudo ./siteapi/add_the_app.sh
 #调试
 安装[httpie](https://github.com/jkbrzt/httpie)
 
+
+
 ###获取access token
 [enable Open edX REST APIs](http://blog.just4fun.site/edx-api.html),只要进入/admin,取得有效access token即可
 
-### access
-(ps:sessionid和csrftoken到浏览器获取)
+### 设置session 和 csrf
+http post /siteapi/session  "AUTHORIZATION: Bearer xxx" sessionid_lms=xxx =xxx csrftoken_lms=xxx sessionid_cms=xxx csrftoken_cms=xxx
 
-http /siteapi/access  "Cookie:sessionid=aaa;csrftoken=bbb" X-CSRFToken:bbb  //直接作为浏览器访问？而不是通过access token？
+sessionid_lms
+sessionid_lms
 
 ### create course （创建课程）
 *  http post /siteapi/course  "AUTHORIZATION: Bearer xxx" org=json_org number=json_number run=json_run course_name=json_display_name username=wwj
