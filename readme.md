@@ -32,10 +32,8 @@ sudo ./siteapi/add_the_app.sh
 [enable Open edX REST APIs](http://blog.just4fun.site/edx-api.html),只要进入/admin,取得有效access token即可
 
 ### 设置session 和 csrf
-http post /siteapi/session  "AUTHORIZATION: Bearer xxx" sessionid_lms=xxx =xxx csrftoken_lms=xxx sessionid_cms=xxx csrftoken_cms=xxx
+http post /siteapi/session  "AUTHORIZATION: Bearer xxx" sessionid_lms=xxx  csrftoken_lms=xxx sessionid_cms=xxx csrftoken_cms=xxx
 
-sessionid_lms
-sessionid_lms
 
 ### create course （创建课程）
 *  http post /siteapi/course  "AUTHORIZATION: Bearer xxx" org=json_org number=json_number run=json_run course_name=json_display_name username=wwj
