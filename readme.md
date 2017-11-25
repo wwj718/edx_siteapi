@@ -1,12 +1,15 @@
-#siteapi
+# siteapi
+
 将edx视为子系统，为外部提供RESTful风格的api,技术层面采用与open edx原生api一样的机制
 
 官方的既有的api参考这里:[edx-platform-api](http://edx.readthedocs.org/projects/edx-platform-api/en/latest/)
 
-#设计
+# 设计
+
 *  这部分代码组织形式为django app
 
-#功能
+# 功能
+
 *  站点级别的管理
 *  用户管理（增删）
 *  课程创建
@@ -14,7 +17,7 @@
 *  注册课程(xxxxxxxxx为你的access token )
 *  http post http://127.0.0.1:5000/siteapi/user username=wwj password=wwj 'Authorization: Bearer xxx'
 
-#在dogwood中使用
+# 在dogwood中使用
 ```bash
 cd /edx/app/edxapp/edx-platform/lms/djangoapps/
 sudo git clone  https://github.com/wwj718/edx_siteapi "siteapi"
@@ -23,12 +26,21 @@ sudo ./siteapi/add_the_app.sh
 /edx/bin/python.edxapp  /edx/app/edxapp/edx-platform/manage.py lms syncdb --settings=aws
 ```
 
-#调试
+创建 /edx/app/edxapp/session.yml，内容为
+
+```
+sessionid_cms: xxx
+csrftoken_cms: xxx
+```
+
+创建
+
+# 调试
 安装[httpie](https://github.com/jkbrzt/httpie)
 
 
 
-###获取access token
+### 获取access token
 [enable Open edX REST APIs](http://blog.just4fun.site/edx-api.html),只要进入/admin,取得有效access token即可
 
 ### 设置session 和 csrf
