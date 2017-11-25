@@ -12,7 +12,7 @@ import shutil
 import tempfile
 
 from collections import namedtuple
-from ipdb import set_trace
+# from ipdb import set_trace
 
 # Sessions are stored in cookies. Each server can have its own cookie
 # for this. We just set all the possible ones.
